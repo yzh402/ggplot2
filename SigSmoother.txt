@@ -1,0 +1,24 @@
+library(reshape2)
+library(plyr)
+library(ggplot2)
+
+df.melt <- melt(dat, id.vars = 'x')
+
+my_custom_df <- function(p) {
+function (df) {
+lmModel <- lm(value ~ x, data = df)
+fs <- summary(lmModel)$fstatistic
+pValue <- pf(fs[1], fs[2], fs[3], lower.tail = FALSE)
+
+if (pValue < p) {
+  df
+}
+  }
+}
+
+df.sig <- ddply(df.melt, 'variable', my_custom_df(0.05))
+
+gp <- ggplot(data = df.melt, aes(x = x, y = value)) + 
+      geom_point(color = 'blue') + 
+      geom_smooth(data = df.sig, method = 'lm', color = 'red', size = 1) + 
+      facet_wrap( ~ variable, scales = 'free', ncol = 2)
