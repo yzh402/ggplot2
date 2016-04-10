@@ -1,0 +1,12 @@
+library(reshape2)
+library(grid)
+library(gtable)
+library(ggplot2)
+
+gp <- ggplot(data = tips, aes(x = total_bill, y = tip/total_bill)) + geom_point() + facet_wrap( ~ day, ncol = 2)
+gp
+g <- ggplotGrob(gp)
+g$heights[c(3,7)] <- unit(0.3, 'in')
+g$grobs[[6]]$heights <- g$grobs[[7]]$heights <- g$grobs[[8]]$heights <- g$grobs[[9]]$heights <- unit(1, 'native')
+dev.new()
+grid.draw(g)
