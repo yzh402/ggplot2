@@ -1,0 +1,23 @@
+# Place a legend for each facet_wrap grid
+# Take 'tips' data in package 'reshape2' as an example
+
+library(reshape2)
+library(ggplot2)
+
+# Split the data into a list
+# Divides the data in the vector 'x' into the groups defined by 'f'
+
+library(gridExtra)
+tips.s <- split(x = tips, f = tips$sex)
+gp1 <- ggplot(data = tips.s$Female, aes(x = total_bill, y = tip)) +
+       geom_point(aes(shape = day)) +
+       geom_line(aes(group = day)) +
+       facet_wrap( ~ sex, ncol = 1)
+
+# Drop in a data frame with the same property as gp1
+
+gp2 <- gp1 %+% tips.s$Male
+
+# Place multiple grobs on a page
+
+grid.arrange(gp1, gp2, ncol = 1)
